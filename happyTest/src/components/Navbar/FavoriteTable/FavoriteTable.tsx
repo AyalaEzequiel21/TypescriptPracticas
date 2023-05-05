@@ -5,13 +5,13 @@ import { GridRenderCellParams, DataGrid } from '@mui/x-data-grid';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@mui/icons-material/Delete'
+import { People } from '@/models';
 
 
 export interface FavoriteTableInterface {
 }
 
 const FavoriteTable: React.FC<FavoriteTableInterface> = () => {
-	const [selectedPeople, setSelectedPeople] = useState<PeopleInterface[]>([])
 
 	const dispatch = useDispatch()
 
@@ -19,14 +19,8 @@ const FavoriteTable: React.FC<FavoriteTableInterface> = () => {
 
 	const stateFavorite = useSelector((store: AppStore) => store.favorites)
 
-	const findPeople = (people: PeopleInterface) => !!selectedPeople.find(p => p.id === people.id)
-	const filterPeople = (people: PeopleInterface) => selectedPeople.filter(p => p.id !== people.id)
-
-
-	const handlelick = (people: PeopleInterface) => {
-		const filteredPeople =  findPeople(people) ? filterPeople(people) : [...selectedPeople, people]
-		dispatch(removeFavorite(filteredPeople))
-		setSelectedPeople(filteredPeople)
+	const handleClick = (people: People) => {
+		dispatch(removeFavorite(people))
 	}
 
 	const columns = [

@@ -1,27 +1,30 @@
+import { People } from '@/models';
 import { addFavorite } from '@/redux';
 import { AppStore } from '@/redux/store';
 import { Checkbox } from '@mui/material';
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export interface PeopleTableInterface {}
 
 const PeopleTable: React.FC<PeopleTableInterface> = () => {
 
-	const [selectedPeople, setSelectedPeople] = useState<PeopleInterface[]>([])
+	const [selectedPeople, setSelectedPeople] = useState<People[]>([])
 
 	const dispatch = useDispatch()
 
 	const pageSize = 5
 
 	const statePeople = useSelector((store: AppStore) => store.people)
-
-	const findPeople = (people: PeopleInterface) => !!selectedPeople.find(p => p.id === people.id)
-	const filterPeople = (people: PeopleInterface) => selectedPeople.filter(p => p.id !== people.id)
+	const favoritePeople = useSelector((store: AppStore) => store.favorites)
 
 
-	const handleChange = (people: PeopleInterface) => {
+	const findPeople = (people: People) => !!favoritePeople.find(p => p.id === people.id)
+	const filterPeople = (people: People) => favoritePeople.filter(p => p.id !== people.id)
+
+
+	const handleChange = (people: People) => {
 		const filteredPeople =  findPeople(people) ? filterPeople(people) : [...selectedPeople, people]
 		dispatch(addFavorite(filteredPeople))
 		setSelectedPeople(filteredPeople)
@@ -71,6 +74,10 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
 			renderCell: (params: GridRenderCellParams) => <>{params.value}</>
 		}
 	]
+
+	useEffect(() => {
+		setSelectedPeople(favoritePeople)
+	}, [favoritePeople])
 
 	return (
 		<DataGrid 

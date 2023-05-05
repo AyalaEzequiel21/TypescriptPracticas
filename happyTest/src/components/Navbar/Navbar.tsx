@@ -4,10 +4,15 @@ import { CustomDialog } from '..';
 import { FavoriteTable } from './FavoriteTable';
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import { dialogOpenSubject$ } from '../CustomDialog/CustomDialog';
+import { useSelector } from 'react-redux';
+import { AppStore } from '@/redux/store';
 
 export interface NavbarInterface {}
 
 const Navbar: React.FC<NavbarInterface> = () => {
+
+  const statePeople = useSelector((store: AppStore) => store.people)
+
 
   const handleClick = () => {
     dialogOpenSubject$.setSubject = true
